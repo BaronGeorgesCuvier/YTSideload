@@ -1,0 +1,33 @@
+name: Build YTSideload
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Theos
+        uses: waruhachi/theos-action@v2.6.3
+        with:
+          remotelog: 'false'
+          libgcuniversal: 'false'
+          altlist: 'false'
+          comet: 'false'
+          orion: 'false'
+
+      - name: Install dpkg
+        run: brew install dpkg
+
+      - name: Build YTSideload dylib
+        run: make dylib
+
+      - name: Upload dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: YTSideload-dylib
+          path: build/YTSideload.dylib
